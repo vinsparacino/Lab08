@@ -27,12 +27,58 @@ public class WordDAO {
 				parole.add(res.getString("nome"));
 			}
 
+			conn.close();
 			return parole;
+			
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Error Connection Database");
 		}
+		
+	}
+
+	public List<String> getAllSimilarWords(String parola, int numeroLettere) {
+		Connection conn = ConnectDB.getConnection();
+		String sql = "SELECT nome FROM parola WHERE nome LIKE ? AND LENGTH(nome) = ?;";
+		PreparedStatement st;
+		
+		try {
+			List<String> parole = new ArrayList<String>();
+			char[] parolaOriginale = parola.toCharArray();
+			
+			System.out.println(parola);
+			
+			for(int i = 0; i< parola.length(); i++) {
+				
+				char temp = parolaOriginale[i];
+				parolaOriginale[i] = '_';
+				String parolaDaCercare = String.copyValueOf(parolaOriginale);
+				parolaOriginale[i] = temp;
+				
+				System.out.println(parolaDaCercare);
+				
+				st = conn.prepareStatement(sql);
+				st.setString(1, parolaDaCercare);
+				st.setInt(2, numeroLettere);
+				ResultSet res = st.executeQuery();
+				
+				while (res.next()) {
+					String nextWord = res.getString("nome");
+					if(parola.compareToIgnoreCase(nextWord) !=0)
+						parole.add(nextWord);
+				}
+			}
+			conn.close();
+			return parole;
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connesione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	
 	}
 
 }

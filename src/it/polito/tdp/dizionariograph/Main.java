@@ -1,5 +1,6 @@
 package it.polito.tdp.dizionariograph;
 
+import it.polito.tdp.dizionariograph.model.Model;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -12,6 +13,10 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("DizionarioGraph.fxml"));
 			BorderPane root = (BorderPane) loader.load();
+			
+			DizionarioGraphController controller = loader.getController();
+			Model model = new Model();
+			controller.setModel(model);
 			
 			// Create here your model.
 			// Assign here the model to the controller.
